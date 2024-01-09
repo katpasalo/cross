@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
 
     public CharacterController controller;
 
+    public float walkSpeed = 12f;
     public float speed = 12f;
     public float gravity = -30f;
     public float jumpHeight = 3f;
@@ -44,5 +45,10 @@ public class PlayerMovement : MonoBehaviour
 
         controller.Move(velocity * Time.deltaTime);
         
+    }
+
+    public void SetSpeed(float newSpeed)
+    {
+        speed = newSpeed;
     }
 }
