@@ -334,6 +334,7 @@ GameObject:
   - component: {fileID: 287062437}
   - component: {fileID: 287062440}
   - component: {fileID: 287062439}
+  - component: {fileID: 287062441}
   m_Layer: 0
   m_Name: First Person Player
   m_TagString: Untagged
@@ -360,7 +361,7 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 3.8
+  m_Height: 4
   m_Radius: 0.6
   m_SlopeLimit: 45
   m_StepOffset: 1
@@ -421,6 +422,24 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &287062441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 287062436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d6c129bc2c6d294dbab9c7a9f7f966d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 287062437}
+  crouchSpeed: 2
+  normalHeight: 4
+  crouchHeight: 1
+  offset: {x: 0, y: 1, z: 0}
+  player: {fileID: 287062438}
 --- !u!1 &378222838
 GameObject:
   m_ObjectHideFlags: 0
