@@ -14,9 +14,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private bool canHeadbob = true;
 
     [Header("Movement Parameters")]
-    [SerializeField] private float walkSpeed = 12f;
     [SerializeField] private float speed = 12f;
+    [SerializeField] private float walkSpeed = 12f;
     [SerializeField] private float sprintSpeed = 18f;
+    [SerializeField] private float crouchSpeed = 6f;
 
     [Header("Jump Parameters")]
     [SerializeField] private float jumpHeight = 3f;
@@ -27,9 +28,8 @@ public class PlayerMovement : MonoBehaviour
     Vector3 velocity;
 
     [Header("Crouch Parameters")]
-    [SerializeField] private float crouchSpeed = 6;
-    [SerializeField] private float normalHeight = 4;
-    [SerializeField] private float crouchHeight = 1;
+    [SerializeField] private float normalHeight = 4f;
+    [SerializeField] private float crouchHeight = 1f;
 
     [Header("Headbob Parameters")]
     [SerializeField] private float walkBobSpeed = 14f;
