@@ -333,9 +333,6 @@ GameObject:
   - component: {fileID: 287062438}
   - component: {fileID: 287062437}
   - component: {fileID: 287062440}
-  - component: {fileID: 287062439}
-  - component: {fileID: 287062441}
-  - component: {fileID: 287062442}
   m_Layer: 0
   m_Name: First Person Player
   m_TagString: Untagged
@@ -387,18 +384,6 @@ Transform:
   - {fileID: 378222839}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &287062439
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 287062436}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a03f46769b56f8749b63c07afa0caffa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &287062440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -417,9 +402,12 @@ MonoBehaviour:
   canSprint: 1
   canCrouch: 1
   canHeadbob: 1
-  walkSpeed: 12
+  canClimb: 1
   speed: 12
+  walkSpeed: 12
   sprintSpeed: 18
+  crouchMoveSpeed: 5
+  climbSpeed: 5
   jumpHeight: 3
   gravity: -30
   groundDistance: 0.4
@@ -427,9 +415,9 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 64
-  crouchSpeed: 6
   normalHeight: 4
   crouchHeight: 1
+  crouchSpeed: 6
   walkBobSpeed: 14
   walkBobAmount: 0.05
   sprintBobSpeed: 18
@@ -438,35 +426,6 @@ MonoBehaviour:
   crouchBobAmount: 0.025
   defaultYPos: 0
   timer: 0
---- !u!114 &287062441
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 287062436}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d6c129bc2c6d294dbab9c7a9f7f966d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  controller: {fileID: 287062437}
---- !u!114 &287062442
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 287062436}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8118ff599ef82dd4d8d06deadbb5648f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerMovement: {fileID: 287062440}
-  playerCamera: {fileID: 2024908995}
-  crouch: {fileID: 287062441}
-  sprint: {fileID: 287062439}
 --- !u!1 &378222838
 GameObject:
   m_ObjectHideFlags: 0
@@ -510,6 +469,7 @@ GameObject:
   - component: {fileID: 659578872}
   - component: {fileID: 659578871}
   - component: {fileID: 659578873}
+  - component: {fileID: 659578874}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
@@ -598,6 +558,29 @@ CapsuleCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!136 &659578874
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 659578869}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -722,6 +705,7 @@ GameObject:
   - component: {fileID: 672088474}
   - component: {fileID: 672088473}
   - component: {fileID: 672088476}
+  - component: {fileID: 672088477}
   m_Layer: 0
   m_Name: Ladder
   m_TagString: Ladder
@@ -809,11 +793,32 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 4, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &672088477
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 672088471}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2, y: 1, z: 1}
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &778241053
 GameObject:

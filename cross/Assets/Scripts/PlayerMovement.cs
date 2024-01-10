@@ -12,16 +12,18 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private bool canSprint = true;
     [SerializeField] private bool canCrouch = true;
     [SerializeField] private bool canHeadbob = true;
+    [SerializeField] private bool canClimb = true;
 
     [Header("Movement Parameters")]
     [SerializeField] private float speed = 12f;
     [SerializeField] private float walkSpeed = 12f;
     [SerializeField] private float sprintSpeed = 18f;
-    [SerializeField] private float crouchSpeed = 6f;
+    [SerializeField] private float crouchMoveSpeed = 5f;
+    [SerializeField] private float climbSpeed = 5f;
 
     [Header("Jump Parameters")]
     [SerializeField] private float jumpHeight = 3f;
-    [SerializeField] private float gravity = -30f;
+    [SerializeField] private float gravity = -50f;
     [SerializeField] private float groundDistance = 0.4f;
     public Transform groundCheck;
     public LayerMask groundMask;
@@ -30,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Crouch Parameters")]
     [SerializeField] private float normalHeight = 4f;
     [SerializeField] private float crouchHeight = 1f;
+    [SerializeField] private float crouchSpeed = 6f;
 
     [Header("Headbob Parameters")]
     [SerializeField] private float walkBobSpeed = 14f;
@@ -45,6 +48,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isMoving = false;
     private bool isSprinting = false;
     private bool isCrouching = false;
+    private bool isClimbing = false;
 
     void Start()
     {
@@ -59,6 +63,7 @@ public class PlayerMovement : MonoBehaviour
         if (canCrouch) {HandleCrouch();}
         if (canHeadbob) {HandleHeadbob();}
         if (canJump) {HandleJump();}
+        if (canClimb) {HandleClimb();}
 
         HandleMovement();
     }
@@ -110,17 +115,31 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            SetSpeed(walkSpeed);
+            if (!isCrouching) 
+            {
+                SetSpeed(walkSpeed);
+            }
             isSprinting = false;
         }
     }
 
     private void HandleCrouch()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKey(KeyCode.LeftControl))
         {
-            isCrouching = !isCrouching;
+            SetSpeed(crouchMoveSpeed);
+            isCrouching = true;
+
         }
+        else
+        {
+            if (!isSprinting)
+            {
+                SetSpeed(walkSpeed);
+            }
+            isCrouching = false;
+        }
+
         float targetHeight = isCrouching ? crouchHeight : normalHeight;
         float smoothHeight = Mathf.Lerp(controller.height, targetHeight, crouchSpeed * Time.fixedDeltaTime);
 
@@ -137,6 +156,28 @@ public class PlayerMovement : MonoBehaviour
                 playerCamera.transform.localPosition.x,
                 defaultYPos + Mathf.Sin(timer) * (isCrouching ? crouchBobAmount : isSprinting ? sprintBobAmount : walkBobAmount),
                 playerCamera.transform.localPosition.z);
+        }
+    }
+
+    private void HandleClimb()
+    {
+        RaycastHit ladderHit;
+        if (Physics.Raycast(transform.position, transform.forward, out ladderHit, 2f) && ladderHit.collider.CompareTag("Ladder"))
+        {
+            isClimbing = true;
+            gravity = 0f;
+            velocity.y = 0f;
+
+            float verticalInput = Input.GetAxis("Vertical");
+            float horizontalInput = Input.GetAxis("Horizontal");
+            Vector3 climbDirection = new Vector3(horizontalInput, verticalInput, 0f);
+            climbDirection = transform.TransformDirection(climbDirection); // Convert to world space
+            controller.Move(climbDirection * climbSpeed * Time.deltaTime);
+        }
+        else
+        {
+            isClimbing = false;
+            gravity = -50f; // Reset gravity to its original value
         }
     }
 }
