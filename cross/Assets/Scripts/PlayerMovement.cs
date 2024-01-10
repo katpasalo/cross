@@ -17,7 +17,8 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundMask;
 
     Vector3 velocity;
-    bool isGrounded;
+    public bool isGrounded;
+    public bool isMoving = false;
 
     // Update is called once per frame
     void Update()
@@ -33,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
         float z = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * x + transform.forward * z;
+        isMoving = (x != 0f || z != 0f);
 
         controller.Move(move * speed * Time.deltaTime);
 

@@ -10,7 +10,7 @@ public class Crouch : MonoBehaviour
     public float normalHeight = 4;
     public float crouchHeight = 1;
 
-    bool isCrouching;
+    public bool isCrouching = false;
 
     void Update()
     {
