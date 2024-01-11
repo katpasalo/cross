@@ -8,11 +8,19 @@ public class PlayerMovement : MonoBehaviour
     public Camera playerCamera;
 
     [Header("Functional Options")]
+    [SerializeField] private bool canMove = true;
     [SerializeField] private bool canJump = true;
     [SerializeField] private bool canSprint = true;
     [SerializeField] private bool canCrouch = true;
     [SerializeField] private bool canHeadbob = true;
     [SerializeField] private bool canClimb = true;
+    [SerializeField] private bool canInteract = true;
+
+    [Header("Controls")]
+    [SerializeField] private KeyCode jumpKey = KeyCode.Space;
+    [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift;
+    [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
+    [SerializeField] private KeyCode interactKey = KeyCode.Mouse0;
 
     [Header("Movement Parameters")]
     [SerializeField] private float speed = 12f;
@@ -44,6 +52,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float defaultYPos = 0;
     [SerializeField] private float timer;
 
+    [Header("Interaction")]
+    [SerializeField] private Vector3 interactionRayPoint = default;
+    [SerializeField] private float interactionDistance = default;
+    [SerializeField] private LayerMask interactionLayer = default;
+    private Interactable currentInteractable;
+
     private bool isGrounded;
     private bool isMoving = false;
     private bool isSprinting = false;
@@ -57,15 +71,23 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        GroundCheck();
+        if (canMove) 
+        {
+            GroundCheck();
 
-        if (canSprint) {HandleSprint();}
-        if (canCrouch) {HandleCrouch();}
-        if (canHeadbob) {HandleHeadbob();}
-        if (canJump) {HandleJump();}
-        if (canClimb) {HandleClimb();}
+            if (canSprint) {HandleSprint();}
+            if (canCrouch) {HandleCrouch();}
+            if (canHeadbob) {HandleHeadbob();}
+            if (canJump) {HandleJump();}
+            if (canClimb) {HandleClimb();}
+            if (canInteract) 
+            {
+                HandleInteractionCheck();
+                HandleInteractionInput();
+            }
 
-        HandleMovement();
+            HandleMovement();
+        }
     }
 
     private void GroundCheck()
@@ -91,7 +113,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleJump()
     {
-        if(Input.GetButtonDown("Jump") && isGrounded)
+        if(Input.GetKeyDown(jumpKey) && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
@@ -108,7 +130,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleSprint()
     {
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(sprintKey))
         {
             SetSpeed(sprintSpeed);
             isSprinting = true;
@@ -125,7 +147,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleCrouch()
     {
-        if (Input.GetKey(KeyCode.LeftControl))
+        if (Input.GetKey(crouchKey))
         {
             SetSpeed(crouchMoveSpeed);
             isCrouching = true;
@@ -178,6 +200,35 @@ public class PlayerMovement : MonoBehaviour
         {
             isClimbing = false;
             gravity = -50f; // Reset gravity to its original value
+        }
+    }
+
+    private void HandleInteractionCheck()
+    {
+        if (Physics.Raycast(playerCamera.ViewportPointToRay(interactionRayPoint), out RaycastHit hit, interactionDistance))
+        {
+            if (hit.collider.gameObject.layer == 9 && (currentInteractable == null || hit.collider.gameObject.GetInstanceID() != currentInteractable.gameObject.GetInstanceID()))
+            {
+                hit.collider.TryGetComponent(out currentInteractable);
+
+                if (currentInteractable)
+                {
+                    currentInteractable.OnFocus();
+                }
+            }        
+        }
+        else if (currentInteractable)
+        {
+            currentInteractable.OnLoseFocus();
+            currentInteractable = null;
+        }
+    }
+
+    private void HandleInteractionInput()
+    {
+        if(Input.GetKeyDown(interactKey) && currentInteractable != null && Physics.Raycast(playerCamera.ViewportPointToRay(interactionRayPoint), out RaycastHit hit, interactionDistance, interactionLayer))
+        {
+            currentInteractable.OnInteract();
         }
     }
 }
